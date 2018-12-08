@@ -1,0 +1,58 @@
+package Storm;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+
+import backtype.storm.spout.SpoutOutputCollector;
+import backtype.storm.task.TopologyContext;
+import backtype.storm.topology.BasicOutputCollector;
+import backtype.storm.topology.OutputFieldsDeclarer;
+import backtype.storm.topology.base.BaseRichSpout;
+import backtype.storm.tuple.Tuple;
+
+public class PrintTwitter extends BaseRichSpout {
+	private static final long serialVersionUID = 1L;
+	File file = new File("/home/ubuntu/workspace/TwitterStorm1/print.txt");
+	FileWriter fw = null;
+	BufferedWriter bw = null;
+	long id;
+	String text = null;
+
+	public void execute(Tuple tuple, BasicOutputCollector collector) {
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			fw = new FileWriter(file.getAbsoluteFile(), true);
+			bw = new BufferedWriter(fw);
+			bw.write(tuple.getValueByField("location") + " "
+					+ tuple.getBinaryByField("username") + " "
+					+ tuple.getValueByField("tweetId") + " "
+					+ tuple.getValueByField("content"));
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void nextTuple() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void open(Map arg0, TopologyContext arg1, SpoutOutputCollector arg2) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void declareOutputFields(OutputFieldsDeclarer arg0) {
+		// TODO Auto-generated method stub
+
+	}
+}
